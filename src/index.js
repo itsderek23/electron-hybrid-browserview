@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, BrowserView, ipcMain } = require('electron');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -13,14 +13,26 @@ const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
-    height: 600,
+    height: 400,
   });
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
+
+  // The remote page
+  let view = new BrowserView({
+    webPreferences: {
+      preload : `${__dirname}/preload.js` // needs full path
+    }
+  })
+  // BrowserView output will go into this console, not main window's devtools console.
+  // view.webContents.openDevTools();
+  mainWindow.setBrowserView(view)
+  view.setBounds({ x: 0, y: 100, width: 800, height: 300 })
+  view.webContents.loadURL('https://pste.eu/p/kYaa.html') // replace with the url to your app ie - http://localhost:3000.
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
@@ -55,3 +67,8 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+ipcMain.on("hello", (evt, name) => {
+  console.log("received hello event=",name);
+  mainWindow.getBrowserView().webContents.send("greeting",`Hi ${name}!`)
+});
