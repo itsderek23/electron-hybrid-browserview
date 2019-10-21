@@ -7,10 +7,13 @@ document.addEventListener("DOMContentLoaded",function(){
     evt.preventDefault();
     const input = document.getElementsByTagName("input")[0];
     console.log("sending hello=",input.value)
+    // Send the contents of the input field via IPC.
+    // The main process listens for this event.
     ipc.send("hello",input.value)
   })
 });
 
+// The main process sends this event after receiving the `hello` event.
 ipc.on("greeting", (evt, result) => {
   console.log("received full greeting=",result)
   const greetingContainer = document.getElementById("greeting_container");
