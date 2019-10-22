@@ -5,3 +5,5 @@ This is an example app that uses `BrowserView` to remotely load contents into an
 ![screen](https://user-images.githubusercontent.com/7880/67238861-1b384180-f40b-11e9-85ab-10031fd3429b.png)
 
 Start via `npm start`.
+
+See [this blog post](https://smilesql.com/blog/hybrid-electron-app-example/) for more background.
